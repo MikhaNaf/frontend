@@ -1,11 +1,74 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const response = await fetch("http://localhost:3000/");
+let films = await response.json();
+
+// Pastikan films adalah array
+films = Array.isArray(films) ? films : [];
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="Website Tempat Review Film">
+    <!-- Search Bar -->
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="input-group">
+                    <input type="text" id="search-bar" class="form-control search-bar" placeholder="Search for movies..." />
+                    <button class="btn btn-primary" type="button" id="search-button">Search</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Film List -->
+    <main class="container mt-5">
+        <h2 class="text-center mb-4">Top Rated Films</h2>
+        <div class="row row-cols-1 row-cols-md-3 g-4" id="film-list">
+            {films.map(film => (
+                <div class="col film-card" data-title={film.title.toLowerCase()} data-genre={film.genre.toLowerCase()}>
+                    <a href={`/film/${film.id}`} style="text-decoration: none; color: inherit;">
+                        <div class="card">
+                            <img src={film.image} class="card-img-top" alt={film.title} />
+                            <div class="card-body">
+                                <h5 class="card-title">{film.title}</h5>
+                                <p class="card-text">{film.genre} | {film.rating}/10</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            ))}
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchBar = document.getElementById('search-bar') as HTMLInputElement;
+            const searchButton = document.getElementById('search-button');
+            const filmCards = document.querySelectorAll('.film-card');
+    
+            function filterFilms() {
+                const query = searchBar?.value.toLowerCase() || '';
+                filmCards.forEach((card) => {
+                    const title = (card as HTMLElement).dataset.title?.toLowerCase() || '';
+                    const genre = (card as HTMLElement).dataset.genre?.toLowerCase() || '';
+    
+                    if (title.includes(query) || genre.includes(query)) {
+                        (card as HTMLElement).style.display = '';
+                    } else {
+                        (card as HTMLElement).style.display = 'none';
+                    }
+                });
+            }
+    
+            if (searchButton) {
+                searchButton.addEventListener('click', filterFilms);
+            }
+    
+            if (searchBar) {
+                searchBar.addEventListener('input', filterFilms);
+            }
+        });
+    </script>
+    
 </Layout>

@@ -1,0 +1,228 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+// Ambil ID dari parameter URL
+const { id } = Astro.params;
+
+// Fetch data film berdasarkan ID
+let film = null;
+try {
+    const response = await fetch(`http://localhost:3000/film/${id}`);
+    if (!response.ok) {
+        throw new Error(`Error fetching film: ${response.statusText}`);
+    }
+    film = await response.json();
+} catch (error) {
+    console.error("Error loading film:", error);
+}
+
+// Fetch komentar untuk film ini
+let comments = [];
+try {
+    const commentResponse = await fetch(`http://localhost:3000/comments/${id}`);
+    if (commentResponse.ok) {
+        comments = await commentResponse.json();
+    }
+} catch (error) {
+    console.error("Error loading comments:", error);
+}
+
+// Validasi agar comments selalu berupa array
+comments = Array.isArray(comments) ? comments : [];
+---
+
+export const prerender = false;
+
+<Layout title={film ? film.title : "Film not found"}>
+    <main class="container mt-5">
+        {film ? (
+            <>
+                <div class="row">
+                    <div class="col-md-6">
+                        <img src={film.image} class="img-fluid" alt={film.title} />
+                    </div>
+                    <div class="col-md-6">
+                        <h2>{film.title}</h2>
+                        <p><strong>Genre:</strong> {film.genre}</p>
+                        <p><strong>Rating:</strong> {film.rating}/10</p>
+                        <p>{film.content}</p>
+                    </div>
+                </div>
+                <hr />
+
+                <h3>Comments</h3>
+                <ul id="commentList">
+                    {comments.map(comment => (
+                        <li>
+                            <strong>{comment.user}</strong>: {comment.text}
+                        </li>
+                    ))}
+                </ul>
+
+                <form id="commentForm" class="mt-4">
+                    <div class="mb-3">
+                        <label for="text" class="form-label">Comment</label>
+                        <textarea class="form-control" id="text" name="text" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Comment</button>
+                </form>
+
+                <button id="logoutButton" class="btn btn-secondary mt-3" style="display: none;">
+                    Logout
+                </button>
+            </>
+        ) : (
+            <p>Film not found. Please check the ID or try again later.</p>
+        )}
+    </main>
+
+    <!-- Modal Login -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" required />
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const user = JSON.parse(localStorage.getItem("user") || "null");
+        const commentForm = document.getElementById("commentForm");
+        const loginModal = document.getElementById("loginModal");
+        const logoutButton = document.getElementById("logoutButton");
+    
+        // Tambahkan Bootstrap modal
+        if (!loginModal) {
+            console.error("Login modal element not found.");
+        }
+    
+        if (commentForm) {
+            commentForm.addEventListener("submit", (e) => {
+                e.preventDefault();
+    
+                // Jika user belum login, munculkan modal login
+                if (!user) {
+                    const bootstrapModal = new bootstrap.Modal(loginModal);
+                    bootstrapModal.show();
+                    return;
+                }
+    
+                // Jika user sudah login, tambahkan komentar
+                const form = e.target as HTMLFormElement;
+                if (!(form instanceof HTMLFormElement)) {
+                    console.error("Event target is not a valid HTMLFormElement.");
+                    return;
+                }
+    
+                const textElement = form.querySelector("#text") as HTMLTextAreaElement;
+                if (!textElement || !(textElement instanceof HTMLTextAreaElement)) {
+                    console.error("Text input not found or invalid.");
+                    return;
+                }
+    
+                const text = textElement.value.trim();
+                if (!text) {
+                    alert("Please fill out the comment field.");
+                    return;
+                }
+    
+                const commentList = document.getElementById("commentList");
+                if (!commentList) {
+                    console.error("Comment list element not found.");
+                    return;
+                }
+    
+                const newComment = document.createElement("li");
+                newComment.innerHTML = `<strong>${user?.email || "Guest"}</strong>: ${text}`;
+                commentList.appendChild(newComment);
+    
+                form.reset();
+            });
+        }
+    
+        if (logoutButton) {
+            logoutButton.style.display = user ? "block" : "none";
+            logoutButton.addEventListener("click", async () => {
+                try {
+                    const response = await fetch("http://localhost:3000/auth/logout", {
+                        method: "POST",
+                    });
+    
+                    const result = await response.json();
+                    if (result.success) {
+                        alert("Logout successful!");
+                        localStorage.removeItem("user");
+                        window.location.reload();
+                    } else {
+                        alert("Logout failed: " + result.error);
+                    }
+                } catch (error) {
+                    console.error("Error during logout:", error);
+                }
+            });
+        }
+    
+        // Form Login
+        const loginForm = document.getElementById("loginForm");
+        if (loginForm) {
+            loginForm.addEventListener("submit", async (e) => {
+                e.preventDefault();
+    
+                const emailElement = loginForm.querySelector("#email") as HTMLInputElement;
+                const passwordElement = loginForm.querySelector("#password") as HTMLInputElement;
+    
+                if (!emailElement || !passwordElement) {
+                    console.error("Email or password input not found.");
+                    return;
+                }
+    
+                const email = emailElement.value.trim();
+                const password = passwordElement.value.trim();
+    
+                if (!email || !password) {
+                    alert("Email and password are required.");
+                    return;
+                }
+    
+                try {
+                    const response = await fetch("http://localhost:3000/auth/login", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ email, password }),
+                    });
+    
+                    const result = await response.json();
+                    if (result.success) {
+                        alert("Login successful!");
+                        localStorage.setItem("user", JSON.stringify(result.user));
+                        window.location.reload();
+                    } else {
+                        alert("Login failed: " + result.error);
+                    }
+                } catch (error) {
+                    console.error("Error during login:", error);
+                }
+            });
+        }
+    </script>
+    
+    
+</Layout>

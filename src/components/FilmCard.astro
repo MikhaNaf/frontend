@@ -1,0 +1,98 @@
+---
+interface Props {
+    title: string;
+    genre: string;
+    rating: number;
+    content: string;
+    image_url: string;
+}
+---
+<main class="container mt-5">
+    <h2 class="text-center mb-4">Top Rated Films</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-4" id="film-list">
+        <!-- Film Cards -->
+        <div class="col film-card" data-genre="Horror" data-bs-toggle="modal" data-bs-target="#filmModal"
+            data-bs-title="The Conjuring" data-bs-description="A chilling horror film about paranormal investigators."
+            data-bs-reviews="Alice, 5, Terrifying atmosphere; John, 4, Great performances; Sam, 3, A true horror masterpiece"
+            data-bs-genre="Horror" data-bs-actors="Vera Farmiga, Patrick Wilson" data-bs-rating="7.5/10">
+            <div class="card">
+                <img src="https://upload.wikimedia.org/wikipedia/id/1/1f/Conjuring_poster.jpg" class="card-img-top"
+                    alt="The Conjuring">
+                <div class="card-body">
+                    <h5 class="card-title">The Conjuring</h5>
+                    <p class="card-text">Horror | 7.5/10</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col film-card" data-genre="Action, Sci-Fi" data-bs-toggle="modal" data-bs-target="#filmModal"
+            data-bs-title="Inception" data-bs-description="A mind-bending thriller where dreams are manipulated for corporate espionage."
+            data-bs-reviews="Mark, 5, Brilliant concept; Sarah, 4, Visually stunning; Dan, 4, Keeps you thinking"
+            data-bs-genre="Sci-Fi" data-bs-actors="Leonardo DiCaprio, Tom Hardy" data-bs-rating="8.8/10">
+            <div class="card">
+                <img src="https://play-lh.googleusercontent.com/buKf27Hxendp3tLNpNtP3E-amP0o4yYV-SGKyS2u-Y3GdGRTyfNCIT5WAVs2OudOz6so5K1jtYdAUKI9nw8" class="card-img-top"
+                    alt="Inception">
+                <div class="card-body">
+                    <h5 class="card-title">Inception</h5>
+                    <p class="card-text">Sci-Fi | 8.8/10</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col film-card" data-genre="Drama, Romance" data-bs-toggle="modal" data-bs-target="#filmModal"
+            data-bs-title="The Notebook" data-bs-description="A timeless love story that will melt your heart."
+            data-bs-reviews="Emma, 5, Beautifully emotional; Jake, 4, A romantic classic"
+            data-bs-genre="Romance" data-bs-actors="Ryan Gosling, Rachel McAdams" data-bs-rating="7.8/10">
+            <div class="card">
+                <img src="https://upload.wikimedia.org/wikipedia/en/8/86/Posternotebook.jpg" class="card-img-top"
+                    alt="The Notebook">
+                <div class="card-body">
+                    <h5 class="card-title">The Notebook</h5>
+                    <p class="card-text">Romance | 7.8/10</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col film-card" data-genre="Fantasy" data-bs-toggle="modal" data-bs-target="#filmModal"
+            data-bs-title="Frozen" data-bs-description="When their kingdom becomes trapped in eternal winter, fearless Anna teams up with rugged mountain man Kristoff and his loyal reindeer Sven to find Elsa, whose icy powers have trapped the land in an endless winter."
+            data-bs-reviews="Jungwon, 5, A magical and heartwarming story; Suga, 4, A visually stunning adventure; Riki, 5, Loved the characters and the music!"
+            data-bs-genre="Fantasy" data-bs-actors="Idina Menzel, Kristen Bell, Josh Gad" data-bs-rating="7.4/10">
+            <div class="card">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4_ANNUz6TjdcQPJFaJF5lgwwQfPyrwnTuqg&s" class="card-img-top"
+                    alt="Frozen">
+                <div class="card-body">
+                    <h5 class="card-title">Frozen</h5>
+                    <p class="card-text">Fantasy | 7.4/10</p>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col film-card" data-genre="Drama" data-bs-toggle="modal" data-bs-target="#filmModal"
+            data-bs-title="Lovely Runner" data-bs-description="A young man with a mysterious past enters the world of competitive running, where he faces challenges in both sport and life."
+            data-bs-reviews="Aulia, 4, A compelling and heartfelt drama; Thalita, 5, Inspiring and emotional; Salsabhila, 4, Great performances"
+            data-bs-genre="Drama" data-bs-actors="Byeon wooseok, Kim Hyeyoon" data-bs-rating="7.8/10">
+            <div class="card">
+                <img src="https://upload.wikimedia.org/wikipedia/id/6/67/Lovely_Runner.png"
+                    class="card-img-top" alt="Lovely Runner">
+                <div class="card-body">
+                    <h5 class="card-title">Lovely Runner</h5>
+                    <p class="card-text">Drama | 7.8/10</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col film-card" data-genre="Fantasy, Adventure" data-bs-toggle="modal" data-bs-target="#filmModal"
+            data-bs-title="Harry Potter" data-bs-description="A young wizard embarks on an adventure filled with magic, mystery, and danger."
+            data-bs-reviews="Mikha, 5, Magical and unforgettable; Sunghoon, 4, Fun and adventurous; Jihyo, 5, A childhood favorite"
+            data-bs-genre="Fantasy" data-bs-actors="Daniel Radcliffe, Emma Watson" data-bs-rating="7.9/10">
+            <div class="card">
+                <img src="https://m.media-amazon.com/images/M/MV5BNTU1MzgyMDMtMzBlZS00YzczLThmYWEtMjU3YmFlOWEyMjE1XkEyXkFqcGc@.V1.jpg" class="card-img-top"
+                    alt="Harry Potter">
+                <div class="card-body">
+                    <h5 class="card-title">Harry Potter</h5>
+                    <p class="card-text">Fantasy | 7.9/10</p>
+                </div>
+        </div>
+    </div>
+</main>
